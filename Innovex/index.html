@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediYantra - Clinic Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <!-- ===== AUTHENTICATION PAGE ===== -->
+    <div id="authPage">
+        <div class="auth-container">
+            <div class="auth-left">
+                <div class="auth-logo">
+                    <img src="logo.png" alt="MediYantra Logo" class="logo-img">
+                </div>
+                <h1>MediYantra</h1>
+                <p>Automated Clinic Token & Availability Management System</p>
+                <div class="auth-features">
+                    <div class="auth-feature">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Digital Token System</span>
+                    </div>
+                    <div class="auth-feature">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Real-time Appointments</span>
+                    </div>
+                    <div class="auth-feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Doctor Analytics</span>
+                    </div>
+                    <div class="auth-feature">
+                        <i class="fas fa-bell"></i>
+                        <span>Instant Notifications</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-right">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="switchAuthTab('login')">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <button class="auth-tab" onclick="switchAuthTab('register')">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                </div>
+
+                <!-- Login Form -->
+                <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="success-message" id="loginSuccess">
+                        <i class="fas fa-check-circle"></i> Login successful! Redirecting...
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                        <span class="error-message" id="loginEmailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="loginPassword" placeholder="Your password" required>
+                        <span class="error-message" id="loginPasswordError"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+
+                    <div class="form-text">
+                        Don't have an account? <a onclick="switchAuthTab('register')">Register here</a>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                    <div class="success-message" id="registerSuccess">
+                        <i class="fas fa-check-circle"></i> Registration successful! Please login.
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="regName" placeholder="John Doe" required>
+                        <span class="error-message" id="regNameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="regEmail" placeholder="your@email.com" required>
+                        <span class="error-message" id="regEmailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="regPassword" placeholder="At least 6 characters" required>
+                        <span class="error-message" id="regPasswordError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" id="regPhone" placeholder="+91 9876543210" required>
+                        <span class="error-message" id="regPhoneError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-user-check"></i> Register As</label>
+                        <select id="regRole" required>
+                            <option value="">-- Select Role --</option>
+                            <option value="patient">Patient</option>
+                            <option value="doctor">Doctor</option>
+                        </select>
+                        <span class="error-message" id="regRoleError"></span>
+                    </div>
+
+                    <div id="doctorFields" style="display: none;">
+                        <div class="form-group">
+                            <label><i class="fas fa-stethoscope"></i> Specialization</label>
+                            <select id="regSpec">
+                                <option value="">-- Select Specialization --</option>
+                                <option>General Physician</option>
+                                <option>Cardiologist</option>
+                                <option>Dermatologist</option>
+                                <option>Orthopedic</option>
+                                <option>Gynecologist</option>
+                            </select>
+                            <span class="error-message" id="regSpecError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-certificate"></i> MCI License Number</label>
+                            <input type="text" id="regLicense" placeholder="MCI12345">
+                            <span class="error-message" id="regLicenseError"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+
+                    <div class="form-text">
+                        Already have an account? <a onclick="switchAuthTab('login')">Login here</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <div id="dashboardPage">
+        <!-- Navbar -->
+        <div class="navbar">
+            <div class="navbar-brand">
+                <img src="logo.png" alt="MediYantra" class="navbar-logo"> MediYantra
+            </div>
+            <div class="navbar-user">
+                <span id="userGreeting"></span>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="main-grid">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="sidebar-title"><i class="fas fa-bars"></i> Menu</div>
+                    <div class="sidebar-item active" onclick="switchPage('dashboard')">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </div>
+                    <div class="sidebar-item" onclick="switchPage('appointments')">
+                        <i class="fas fa-calendar-check"></i>  Bed Management
+                    </div>
+
+                    <div class="sidebar-item" onclick="switchPage('ambulance')">
+                        <i class="fas fa-ambulance"></i> Ambulance Tracking
+                    </div>
+
+                    <div id="patientMenu">
+                        <div class="sidebar-item" onclick="switchPage('my-appointments')">
+                            <i class="fas fa-calendar-check"></i> My Appointments
+                        </div>
+                        <div class="sidebar-item" onclick="switchPage('services')">
+                            <i class="fas fa-hospital"></i> Services
+                        </div>
+                        <div class="sidebar-item" onclick="switchPage('doctors')">
+                            <i class="fas fa-search"></i> Find Doctors
+                        </div>
+                        <div class="sidebar-item" onclick="switchPage('treatments')">
+                            <i class="fas fa-pills"></i> Treatments
+                        </div>
+                    </div>
+
+                    <div id="doctorMenu" style="display: none;">
+                        <div class="sidebar-item" onclick="switchPage('schedule')">
+                            <i class="fas fa-clock"></i> Schedule
+                        </div>
+                        <div class="sidebar-item" onclick="switchPage('patients')">
+                            <i class="fas fa-users"></i> My Patients
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="content">
+                    <!-- Dashboard Page -->
+                    <div class="page active" id="dashboard">
+                        <h2><i class="fas fa-home"></i> Dashboard</h2>
+
+                        <div id="patientDash">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <h4 id="totalAppts">0</h4>
+                                    <p>Total Appointments</p>
+                                </div>
+                                <div class="stat-card success">
+                                    <h4 id="upcomingAppts">0</h4>
+                                    <p>Upcoming</p>
+                                </div>
+                                <div class="stat-card warning">
+                                    <h4 id="completedAppts">0</h4>
+                                    <p>Completed</p>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <h3><i class="fas fa-list"></i> Recent Appointments</h3>
+                                <div id="recentAppts"></div>
+                            </div>
+                        </div>
+
+                        <div id="doctorDash" style="display: none;">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <h4 id="todayCount">0</h4>
+                                    <p>Today's Appointments</p>
+                                </div>
+                                <div class="stat-card success">
+                                    <h4 id="totalPatients">0</h4>
+                                    <p>Total Patients</p>
+                                </div>
+                                <div class="stat-card warning">
+                                    <h4 id="docRating">4.8</h4>
+                                    <p>Rating</p>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <h3><i class="fas fa-calendar-day"></i> Today's Schedule</h3>
+                                <div id="todayList"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appointments Page - Hidden/Combined with My Appointments -->
+                    <div class="page" id="appointments">
+                        <h2><i class="fas fa-bed"></i> Bed Management</h2>
+                    
+                        <!-- Stats like Dashboard -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h4 id="totalBeds">50</h4>
+                                <p>Total Beds</p>
+                            </div>
+                            <div class="stat-card success">
+                                <h4 id="availableBeds">30</h4>
+                                <p>Available</p>
+                            </div>
+                            <div class="stat-card warning">
+                                <h4 id="occupiedBeds">20</h4>
+                                <p>Occupied</p>
+                            </div>
+                        </div>             
+                        <!-- Booking Form -->
+                        <div class="card" style="max-width: 800px; margin-top: 2rem;">
+                            <h3><i class="fas fa-procedures"></i> Book Bed</h3>
+                    
+                            <form onsubmit="bookBed(event)">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                    
+                                    <div class="form-group">
+                                        <label>Patient Name</label>
+                                        <input type="text" id="bedPatient" required>
+                                    </div>
+                    
+                                    <div class="form-group">
+                                        <label>Contact</label>
+                                        <input type="tel" id="bedContact" required>
+                                    </div>
+                    
+                                    <div class="form-group">
+                                        <label>Bed Type</label>
+                                        <select id="bedType" required>
+                                            <option value="">Select</option>
+                                            <option>General</option>
+                                            <option>ICU</option>
+                                            <option>Emergency</option>
+                                            <option>Maternity</option>
+                                        </select>
+                                    </div>
+                    
+                                    <div class="form-group">
+                                        <label>Ward</label>
+                                        <input type="text" id="bedWard" placeholder="Ward A / B">
+                                    </div>
+                    
+                                    <div class="form-group">
+                                        <label>Start Date</label>
+                                        <input type="date" id="bedStart" required>
+                                    </div>
+                    
+                                    <div class="form-group">
+                                        <label>End Date</label>
+                                        <input type="date" id="bedEnd" required>
+                                    </div>
+                                </div>
+                    
+                                <button class="btn btn-primary" style="margin-top:1rem; width:100%;">
+                                    <i class="fas fa-check"></i> Allocate Bed
+                                </button>
+                            </form>
+                        </div>
+                    
+                        <!-- Booked Beds List -->
+                        <div class="card" style="margin-top:2rem;">
+                            <h3><i class="fas fa-list"></i> Bed Allocations</h3>
+                            <div id="bedList"></div>
+                        </div>
+                    
+
+
+                    <h3>💊 Add Medicine Schedule</h3>
+
+<div class="schedule-box">
+  <input type="text" id="medPatient" placeholder="Patient Name">
+  <input type="text" id="medName" placeholder="Medicine Name">
+
+  <select id="medTime">
+    <option>Morning</option>
+    <option>Afternoon</option>
+    <option>Night</option>
+  </select>
+
+  <button onclick="addMedicine()">Add Schedule</button>
+</div>
+
+<h3>Patient Medicine Schedule</h3>
+
+<table>
+  <tr>
+    <th>Patient</th>
+    <th>Medicine</th>
+    <th>Time</th>
+  </tr>
+  <tbody id="medTable"></tbody>
+</table>
+</div>
+                   <!-- ambulance track -->
+
+                  <!-- 🚑 Ambulance Tracking Page -->
+<div class="page" id="ambulance" >
+
+    <h2>🚑 Ambulance Tracking</h2>
+  
+    <!-- Stats -->
+    <div class="grid-3">
+      <div class="stat-card blue">
+        <h1>10</h1>
+        <p>Total Ambulances</p>
+      </div>
+  
+      <div class="stat-card green">
+        <h1>6</h1>
+        <p>Available</p>
+      </div>
+  
+      <div class="stat-card orange">
+        <h1>4</h1>
+        <p>On Duty</p>
+      </div>
+    </div>
+  
+    <!-- Request Form -->
+    <form onsubmit="submitAmbulanceRequest(event)">
+  
+        <input type="text" id="patientName" placeholder="Patient Name" class="input" required>
+        
+        <input type="text" id="pickupLocation" placeholder="Pickup Location" class="input" required>
+        
+        <input type="text" id="contactNumber" placeholder="Contact Number" class="input" required>
+      
+        <button type="submit" class="btn btn-primary">
+          Request Now
+        </button>
+      
+      </form>
+      
+      <div id="ambulanceSuccess" class="success-msg">
+        🚑 Ambulance requested successfully!
+      </div>
+  
+    <!-- Nearby Ambulances -->
+    <div class="card">
+      <h3>📍 Nearby Ambulances</h3>
+      <div id="ambulanceList"></div>
+    </div>
+  
+    </div>
+                    <!-- Appointment Registration Page -->
+                    <div class="page" id="my-appointments">
+                        <h2><i class="fas fa-calendar-check"></i> Schedule Appointment</h2>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                            <!-- Doctor Selection -->
+                            <div class="card">
+                                <h3><i class="fas fa-user-md"></i> Step 1: Choose Doctor</h3>
+                                <div id="doctorScheduleList" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                            </div>
+
+                            <!-- Calendar -->
+                            <div class="card">
+                                <h3><i class="fas fa-calendar"></i> Step 2: Select Date</h3>
+                                <div id="scheduleCalendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem;"></div>
+                                <div style="margin-top: 1rem; padding: 1rem; background: #f5f5f5; border-radius: 0.5rem;">
+                                    <p><strong>Selected Date:</strong> <span id="selectedScheduleDate" style="color: var(--primary);">Not selected</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time Slots -->
+                        <div class="card" style="margin-bottom: 2rem;">
+                            <h3><i class="fas fa-clock"></i> Step 3: Choose Time Slot</h3>
+                            <div id="timeSlotGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem;"></div>
+                        </div>
+                    
+                        <!-- Appointment Details -->
+                        <div class="card" style="max-width: 800px;">
+                            <h3><i class="fas fa-info-circle"></i> Step 4: Complete Details</h3>
+                            <form id="apptRegistrationForm" onsubmit="handleApptRegistration(event)">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                                    <div>
+                                        <label><strong>Doctor:</strong></label>
+                                        <p id="scheduleDisplayDoctor" style="padding: 0.7rem; background: #f5f5f5; border-radius: 0.4rem;">-- Not selected --</p>
+                                    </div>
+                                    <div>
+                                        <label><strong>Date & Time:</strong></label>
+                                        <p id="scheduleDisplayDateTime" style="padding: 0.7rem; background: #f5f5f5; border-radius: 0.4rem;">-- Not selected --</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="fas fa-notes-medical"></i> Reason for Visit *</label>
+                                    <textarea id="regReason" placeholder="Describe your symptoms or reason for visit" required style="resize: vertical; min-height: 100px;"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contact Number</label>
+                                    <input type="tel" id="regPhone" placeholder="10-digit phone number">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+                                    <i class="fas fa-check-circle"></i> Book Appointment
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Appointment History -->
+                        <div style="margin-top: 3rem;">
+                            <h3><i class="fas fa-history"></i> Your Recent Appointments</h3>
+                            <div id="appointmentHistory" style="display: grid; gap: 1rem;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Services Page -->
+                    <div class="page" id="services">
+                        <h2><i class="fas fa-hospital"></i> Our Services</h2>
+                        <div class="services-grid" id="servicesGrid"></div>
+                    </div>
+
+                    <!-- Find Doctors Page -->
+                    <div class="page" id="doctors">
+                        <h2><i class="fas fa-search"></i> Find Specialist Doctors</h2>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;" id="specialtyFilters"></div>
+                        <div id="doctorsList"></div>
+                    </div>
+
+                    <!-- Treatments Page -->
+                    <div class="page" id="treatments">
+                        <h2><i class="fas fa-clinic-medical"></i> Available Treatments</h2>
+                        <div class="treatments-grid" id="treatmentsGrid"></div>
+                    </div>
+
+                    <!-- Schedule Management Page -->
+                    <div class="page" id="schedule">
+                        <h2><i class="fas fa-clock"></i> Manage Schedule</h2>
+
+                        <div class="card">
+                            <h3>Clinic Hours</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label><i class="fas fa-play"></i> Start Time</label>
+                                    <input type="time" id="startTime" value="09:00">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-stop"></i> End Time</label>
+                                    <input type="time" id="endTime" value="17:00">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label><i class="fas fa-hourglass"></i> Slot Duration</label>
+                                    <select id="slotDuration">
+                                        <option value="15">15 minutes</option>
+                                        <option value="30" selected>30 minutes</option>
+                                        <option value="45">45 minutes</option>
+                                        <option value="60">1 hour</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-users"></i> Max Patients/Slot</label>
+                                    <input type="number" id="maxPatients" value="5" min="1" max="20">
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" onclick="saveSchedule()">
+                                <i class="fas fa-save"></i> Save Schedule
+                            </button>
+                        </div>
+
+                        <div class="card">
+                            <h3><i class="fas fa-calendar-times"></i> Plan Leave</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar"></i> From Date</label>
+                                    <input type="date" id="leaveFrom">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar"></i> To Date</label>
+                                    <input type="date" id="leaveTo">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="fas fa-comment"></i> Reason</label>
+                                <input type="text" id="leaveReason" placeholder="Optional reason for leave...">
+                            </div>
+
+                            <button class="btn btn-secondary" onclick="addLeave()">
+                                <i class="fas fa-plus"></i> Add Leave
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Patients List Page -->
+                    <div class="page" id="patients">
+                        <h2><i class="fas fa-users"></i> My Patients</h2>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Phone</th>
+                                    <th>Appointments</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientsTable">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: var(--gray);">No patients yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== APPOINTMENT BOOKING MODAL ===== -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-calendar-plus"></i> Register Appointment</h3>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+
+            <form onsubmit="submitAppointment(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user-md"></i> Doctor Name</label>
+                    <input type="text" id="modalDoctorName" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-stethoscope"></i> Specialization</label>
+                    <input type="text" id="modalDoctorSpec" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-calendar"></i> Select Date</label>
+                    <input type="date" id="modalApptDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-clock"></i> Select Time</label>
+                    <div class="time-slots" id="modalTimeSlots"></div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-notes-medical"></i> Reason for Visit</label>
+                    <textarea id="modalReason" placeholder="Describe your symptoms..." style="resize: vertical; min-height: 80px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-file-medical"></i> Symptoms/Medical History</label>
+                    <textarea id="modalMedicalHistory" placeholder="Any relevant medical history..." style="resize: vertical; min-height: 80px;"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-check"></i> Confirm Booking
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
